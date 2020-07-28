@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import { receiveDecks, addDeck, removeDeck } from '../actions'
 import { timeToString, getDailyReminderValue } from '../utils/helpers'
 import { getDecks } from '../utils/api'
-import { white, lightPurp } from '../utils/colors'
+import { white, lightBlue, darkgray } from '../utils/colors'
 import { AppLoading } from 'expo'
+import DeckDetails from './DeckDetails'
 
 class Decks extends Component {
   state = {
@@ -38,18 +39,19 @@ class Decks extends Component {
           <View key={key} style={styles.container}>
             <TouchableOpacity style={styles.item} onPress={()=> this.props.navigation.navigate('Deck',
             { deckTitle: value.title })}>
-            <View style={styles.row}>
+            <DeckDetails style={styles.deckDetails} deck={value}/>
+            {/* <View>
                 <View>
                     <Text style={styles.title}>
                         {value.title}
                     </Text>
                 </View>
                 <View>
-                    <Text style={styles.noDataText}>
+                    <Text style={styles.cardCount}>
                         {value.questions.length} Cards
                     </Text>
                 </View>
-            </View>
+            </View> */}
             </TouchableOpacity>
         </View>
       )
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
             width: 0,
             height: 3,
         },
-        backgroundColor: lightPurp
+        backgroundColor: lightBlue
     },
     container: {
         flex: 1,
@@ -97,12 +99,18 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         fontWeight: 'bold',
     },
-    noDataText: {
+    cardCount: {
         fontSize: 20,
         paddingTop: 20,
         paddingBottom: 20,
+        color: darkgray,
         alignSelf: 'center'
-    }
+    },
+    deckDetails: {
+        flex: 1,
+        padding: 5,
+        justifyContent: 'center'
+    },
 })
 
 function mapStateToProps (decks) {

@@ -18,11 +18,9 @@ export default function entries (state = {}, action) {
             }
         case REMOVE_DECK:
             const { key } = action
-            console.log("action: ", action)
-            let new_state = Object.assign({}, state)
+            let new_state = {...state}
             new_state[key] = undefined
             delete new_state[key]
-            console.log("new state after remove:", new_state)
             return new_state
         case ADD_CARD_TO_DECK:
             const { deckTitle, card } = action

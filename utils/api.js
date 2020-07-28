@@ -4,14 +4,13 @@ import { deckResults } from './helpers'
 const DECKS_STORAGE_KEY = 'MobileFlashcards:decks'
 
 export function getDecks() {
-    return AsyncStorage.getItem(DECKS_STORAGE_KEY).then(deckResults)
+    return AsyncStorage.getItem(DECKS_STORAGE_KEY).then((deckResults) => JSON.parse(deckResults))
 }
 
 export function getDeck(id) {
-    getDecks().then((results) => {
-        const decks = JSON.parse(results)
-        return decks[id]
-    })
+    return AsyncStorage.getItem(DECKS_STORAGE_KEY).then((deck) => {
+        return JSON.parse(deck)[id]})
+        .catch((e) => console.log("Error occured while fetching deck from db: ", e))
 }
 
 export function saveDeckTitle(title) {
@@ -23,21 +22,18 @@ export function saveDeckTitle(title) {
     }))
 }
 
-export function saveCardToDeck(title, card) {
-    getDeck(title).then((deck) => {
+export function saveCardToDeck(deckTitle, card) {
+    getDeck(deckTitle).then((deck) => {
         return AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify({
-        [title]: {
-            questions: [...deck.questions].concat(card)
-        }
-    }))
+        [deckTitle]: {
+                ...deck,
+                questions: [
+                            ...deck.questions,
+                            card
+                            ]
+                }
+        }))
     })
-    // const deck = getDeck(title)
-    // return AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify({
-    //     [title]: {
-    //         questions: [...deck.questions, card]
-    //     }
-    // }))
-
 }
 
 export function deleteDeck(key) {

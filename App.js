@@ -4,6 +4,7 @@ import Decks from './components/Decks'
 import Deck from './components/Deck'
 import AddDeck from './components/AddDeck'
 import NewQuestion from './components/NewQuestion'
+import Quiz from './components/Quiz'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import reducer from './reducers'
@@ -25,9 +26,9 @@ const Stack = createStackNavigator()
 
 const NavTab = () => (
   <Tab.Navigator tabBarOptions={{
-    activeTintColor: Platform.OS === 'ios' ? purple : white,
+    activeTintColor: white,
     style: {
-      backgroundColor: Platform.OS === 'ios' ? white : purple,
+      backgroundColor: purple,
       shadowColor: 'rgba(0, 0, 0, 0.24)',
       shadowOffset: {
         width: 0,
@@ -62,6 +63,12 @@ const NavStack = () => (
       }
       }}/>
     <Stack.Screen name='New Question' component={NewQuestion} options={{
+      headerTintColor: white,
+      headerStyle: {
+        backgroundColor: purple,
+      }
+      }}/>
+    <Stack.Screen name='Start Quiz' component={Quiz} options={{
       headerTintColor: white,
       headerStyle: {
         backgroundColor: purple,

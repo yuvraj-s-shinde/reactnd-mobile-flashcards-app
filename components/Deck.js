@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import TextButton from './TextButton'
-import { white } from '../utils/colors'
+import { white, purple } from '../utils/colors'
 import { connect } from 'react-redux'
 import { removeDeck, receiveDecks } from '../actions'
 // import { getDailyReminderValue, timeToString } from '../utils/helpers'
 import { deleteDeck, getDecks } from '../utils/api'
 import SubmitBtn from './SubmitBtn'
+import DeckDetails from './DeckDetails'
 
 class Deck extends Component {
 
@@ -17,15 +18,21 @@ class Deck extends Component {
         this.props.navigation.goBack()
     }
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.deck !== null
+    }
+
     handleRemoveDeck = () => {
         const { goBack, deck } = this.props
+        
+        //update db
+        this.props.dispatch(removeDeck(deck.title))
+        
+        //update redux
         deleteDeck(deck.title)
-        removeDeck(deck.title)
-        toHome()
-        getDecks()
-        .then((decks) => {
-        console.log("decks db after remove:", decks)
-        })
+
+        // navigate to home
+        this.toHome()
     }
 
     handleAddCard() {
@@ -36,7 +43,8 @@ class Deck extends Component {
         const { title, questions } = this.props.deck
         return (
             <View style={styles.container}>
-                <View>
+                <DeckDetails style={styles.deckDetails} deck={this.props.deck} />
+                {/* <View>
                     <Text style={styles.noDataText}>
                         {title}
                     </Text>
@@ -45,8 +53,9 @@ class Deck extends Component {
                     <Text style={styles.noDataText}>
                         {questions.length} Cards
                     </Text>
-                </View>
-                <SubmitBtn onPress={() => this.props.navigation.navigate('New Question', { deckTitle: title })} text='Add Card'/>
+                </View> */}
+                <SubmitBtn style={styles.addCardButton} onPress={() => this.props.navigation.navigate('New Question', { deckTitle: title })} text='Add Card'/>
+                <SubmitBtn style={styles.startQuizButton} onPress={() => this.props.navigation.navigate('Start Quiz', { deckTitle: title })} text='Start Quiz'/>
                 <TextButton style={{padding: 10}} onPress={this.handleRemoveDeck}>
                     Remove Deck
                 </TextButton>
@@ -65,13 +74,44 @@ const styles = StyleSheet.create({
         fontSize: 20,
         paddingTop: 20,
         paddingBottom: 20
-        }
+        },
+    addCardButton: {
+        padding: 10,
+        paddingLeft: 30,
+        paddingRight: 30,
+        justifyContent: 'center',
+        borderWidth: 1, 
+        borderRadius: 2,
+        height: 45,
+        backgroundColor: white,
+        alignItems: 'center',
+        marginBottom: 30
+    },
+    startQuizButton: {
+        padding: 10,
+        paddingLeft: 30,
+        paddingRight: 30,
+        justifyContent: 'center',
+        borderWidth: 1, 
+        borderRadius: 2,
+        height: 45,
+        backgroundColor: purple,
+        alignItems: 'center',
+        marginBottom: 30
+    },
+    deckDetails: {
+        flex: 1,
+        backgroundColor: white,
+        padding: 5,
+        
+        justifyContent: 'center'
+    },
 })
 
 function mapStateToProps(state, { route }) {
     const { deckTitle } = route.params
     return {
-        deck: state[deckTitle],
+        deck: deckTitle in state ? state[deckTitle]: null,
     }
 }
 

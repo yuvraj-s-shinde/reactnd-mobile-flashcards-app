@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { saveCardToDeck } from '../utils/api'
 import { connect } from 'react-redux'
 import { addCardToDeck } from '../actions'
-import { white } from '../utils/colors'
+import { white, purple } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
 import SubmitBtn from './SubmitBtn'
 
@@ -39,7 +39,21 @@ const styles = StyleSheet.create({
       borderWidth: 1, 
       alignItems: 'center' ,
       justifyContent: 'center'
-    }
+    },
+    submitButton: {
+        padding: 10,
+        paddingLeft: 30,
+        paddingRight: 30,
+        justifyContent: 'center',
+        borderWidth: 1, 
+        borderRadius: 2,
+        height: 45,
+        backgroundColor: purple,
+        alignItems: 'center',
+        marginBottom: 30,
+        marginLeft: 15,
+        marginRight: 15
+    },
 })
 
 class NewQuestion extends Component {
@@ -73,7 +87,7 @@ class NewQuestion extends Component {
         }
 
         //update redux
-            this.props.dispatch(addCardToDeck(deckTitle, card))
+        this.props.dispatch(addCardToDeck(deckTitle, card))
 
         //update db
         saveCardToDeck(deckTitle, card)
@@ -111,7 +125,7 @@ class NewQuestion extends Component {
                 maxLength={40}
                 />
             </View>
-            <SubmitBtn onPress={this.submit} text='Submit' />
+            <SubmitBtn style={styles.submitButton} onPress={this.submit} text='Submit' />
           </View>
       )
     }

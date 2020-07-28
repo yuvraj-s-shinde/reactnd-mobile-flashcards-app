@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { saveDeckTitle, getDeck } from '../utils/api'
 import { connect } from 'react-redux'
 import { addDeck } from '../actions'
-import { white } from '../utils/colors'
+import { white, purple } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
 import SubmitBtn from './SubmitBtn'
 
@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
         fontSize: 40,
         alignSelf: 'center',
         fontWeight: "bold",
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginLeft: 15,
         },
     textInput: {  
       borderColor: 'gray', 
@@ -27,7 +28,21 @@ const styles = StyleSheet.create({
       borderWidth: 1, 
       alignItems: 'center' ,
       justifyContent: 'center'
-    }
+    },
+    submitButton: {
+        padding: 10,
+        paddingLeft: 30,
+        paddingRight: 30,
+        justifyContent: 'center',
+        borderWidth: 1, 
+        borderRadius: 2,
+        height: 45,
+        backgroundColor: purple,
+        alignItems: 'center',
+        marginBottom: 30,
+        marginLeft: 15,
+        marginRight: 15
+    },
 })
 
 class AddDeck extends Component {
@@ -53,7 +68,7 @@ class AddDeck extends Component {
         }
 
         //update redux
-            this.props.dispatch(addDeck(deck))
+        this.props.dispatch(addDeck(deck))
 
         //update db
         saveDeckTitle(deckTitle)
@@ -82,7 +97,7 @@ class AddDeck extends Component {
                 value={this.state.deckTitle}
                 />
             </View>
-            <SubmitBtn onPress={this.submit} text='Submit' />
+            <SubmitBtn style={styles.submitButton} onPress={this.submit} text='Submit' />
           </View>
       )
     }
