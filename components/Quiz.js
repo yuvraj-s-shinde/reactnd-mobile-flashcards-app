@@ -4,115 +4,112 @@ import { Ionicons } from '@expo/vector-icons'
 import { saveCardToDeck } from '../utils/api'
 import { connect } from 'react-redux'
 import { addCardToDeck } from '../actions'
-import { white } from '../utils/colors'
+import { white, green, red } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
 import SubmitBtn from './SubmitBtn'
+import QuestionCard from './QuestionCard'
+import ScoreCard from './ScoreCard'
 
 const styles = StyleSheet.create({
-    container : {
+    container: {
         flex: 1,
         backgroundColor: white,
-        justifyContent: 'space-around'
+        padding: 15,
     },
-    row: {
-        flexDirection: 'row',
-        flex: 1,
-        alignItems: 'center'
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 30,
-        marginLeft: 30,
-    },
-    title: {
+    noDataText: {
         fontSize: 20,
-        alignSelf: 'center',
-        fontWeight: "bold",
-        justifyContent: 'center'
+        paddingTop: 20,
+        paddingBottom: 20
         },
-    textInput: {  
-      borderColor: 'gray', 
-      marginLeft: 20,
-      marginRight: 20,
-      borderWidth: 1, 
-      alignItems: 'center' ,
-      justifyContent: 'center'
-    }
+    correctButton: {
+        padding: 10,
+        paddingLeft: 30,
+        paddingRight: 30,
+        justifyContent: 'center',
+        borderWidth: 1, 
+        borderRadius: 2,
+        height: 45,
+        backgroundColor: green,
+        alignItems: 'center',
+        marginBottom: 30
+    },
+    incorrectButton: {
+        padding: 10,
+        paddingLeft: 30,
+        paddingRight: 30,
+        justifyContent: 'center',
+        borderWidth: 1, 
+        borderRadius: 2,
+        height: 45,
+        backgroundColor: red,
+        alignItems: 'center',
+        marginBottom: 30
+    },
+    questionCard: {
+        flex: 1,
+        backgroundColor: white,
+        padding: 5,
+        justifyContent: 'center'
+    },
 })
 
 class Quiz extends Component {
     state = {
-        question: '',
-        answer: ''
+        score: 0,
+        currentQuestionNo: 0
     }
 
     toHome = () => {
         this.props.navigation.goBack()
     }
 
-    onChangeQuestion(text) {
-      this.setState({
-        question: text
-      })
+    onCorrectAnswer() {
+      this.setState((currState) => ({
+        score: currState.score + 1,
+        currentQuestionNo: currState.currentQuestionNo + 1
+      }))
     }
 
-    onChangeAnswer(text) {
-      this.setState({
-        answer: text
-      })
+    onIncorrectAnswer() {
+      this.setState((currState) => ({
+        score: currState.score != 0 ? currState.score - 1 : 0,
+        currentQuestionNo: currState.currentQuestionNo + 1
+      }))
     }
 
-    submit = () => {
-        const { question, answer } = this.state
-        const { deckTitle } = this.props
-        const card = {
-            question: question,
-            answer: answer
-        }
-
-        //update redux
-        this.props.dispatch(addCardToDeck(deckTitle, card))
-
-        //update db
-        saveCardToDeck(deckTitle, card)
-
-        //reset state
+    resetScore() {
         this.setState({
-            question: '',
-            answer: ''
+            score: 0,
+            currentQuestionNo: 0
         })
-
-        // navigate to home
-        this.toHome()
     }
 
     render() {
+      const { deck } = this.props
+      const { score, currentQuestionNo } = this.state
       return(
           <View style={styles.container}>
-            <View style={styles.textInput}>
-                <TextInput
-                onChangeText={text => this.onChangeQuestion(text)}
-                placeholder='Question'
-                value={this.state.question}
-                multiline
-                numberOfLines={4}
-                maxLength={40}
-                />
+            {currentQuestionNo < deck.questions.length && (
+            <View style={styles.container}>
+                <View>
+                    <Text>
+                        {`${currentQuestionNo + 1}/${deck.questions.length}`}
+                    </Text>
+                </View>
+                <QuestionCard 
+                style={styles.questionCard} 
+                question={deck.questions[currentQuestionNo]}
+                onCorrectAnswer={() => this.onCorrectAnswer()}
+                onIncorrectAnswer={() => this.onIncorrectAnswer()} />            
             </View>
-            <View style={styles.textInput}>
-                <TextInput
-                onChangeText={text => this.onChangeAnswer(text)}
-                placeholder='Answer'
-                value={this.state.answer}
-                multiline
-                numberOfLines={4}
-                maxLength={40}
-                />
-            </View>
-            <SubmitBtn onPress={this.submit} text='Submit' />
-          </View>
+            )}
+            {currentQuestionNo >= deck.questions.length && (
+                <ScoreCard 
+                score={score} 
+                maxScore={deck.questions.length} 
+                resetScore={() => this.resetScore()} />
+            )}
+        </View>
       )
     }
 }
@@ -120,7 +117,7 @@ class Quiz extends Component {
 function mapStateToProps(state, { route }) {
     const { deckTitle } = route.params
     return {
-        deckTitle,
+        deck: deckTitle in state ? state[deckTitle]: null,
     }
 }
 

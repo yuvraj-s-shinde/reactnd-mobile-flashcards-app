@@ -68,7 +68,7 @@ const NavStack = () => (
         backgroundColor: purple,
       }
       }}/>
-    <Stack.Screen name='Start Quiz' component={Quiz} options={{
+    <Stack.Screen name='Quiz' component={Quiz} options={{
       headerTintColor: white,
       headerStyle: {
         backgroundColor: purple,
