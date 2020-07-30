@@ -1,23 +1,17 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
-import TextButton from './TextButton'
-import { white, purple } from '../utils/colors'
 import { connect } from 'react-redux'
-import { removeDeck, receiveDecks } from '../actions'
+import { white, purple } from '../utils/colors'
 import { deleteDeck, getDecks } from '../utils/api'
+import { removeDeck, receiveDecks } from '../actions'
+import TextButton from './TextButton'
 import SubmitBtn from './SubmitBtn'
 import DeckDetails from './DeckDetails'
 
 class ScoreCard extends Component {
 
-    // shouldComponentUpdate(nextProps) {
-    //     // Check to avoind render for deleted deck
-    //     return nextProps.deck !== null  
-    // }
-
-
     render() {
-        const { score, maxScore, resetScore, deckTitle } = this.props
+        const { score, maxScore, resetScore, deckTitle, navigation } = this.props
         return (
             <View style={styles.container}>
                 <View>
@@ -27,11 +21,11 @@ class ScoreCard extends Component {
                 </View>
                 <SubmitBtn style={styles.restartQuizButton} onPress={() => {
                     resetScore()
-                    this.props.navigation.navigate('Quiz', { deckTitle: title })
+                    navigation.navigate('Quiz', { deckTitle: deckTitle })
                 }} text='Restart Quiz'/>
                 <SubmitBtn style={styles.backToDeckButton} onPress={() => {
                     resetScore()
-                    this.props.navigation.navigate('Deck', { deckTitle: title })
+                    navigation.navigate('Deck', { deckTitle: deckTitle })
                 }} text='Back to Deck'/>
             </View>
         )
@@ -81,19 +75,4 @@ const styles = StyleSheet.create({
     },
 })
 
-function mapStateToProps(state, { route, score, maxScore }) {
-    const { deckTitle } = route.params
-    return {
-        deckTitle,
-        score,
-        maxScore
-    }
-}
-
-// function mapDispatchToProps (dispatch, {route, navigation}) {
-//     return {
-//         goBack: () => navigation.goBack()
-//     }
-// }
-
-export default connect(mapStateToProps)(ScoreCard);
+export default connect()(ScoreCard);

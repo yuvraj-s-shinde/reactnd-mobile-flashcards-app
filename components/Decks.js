@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, Platform, TouchableOpacity, FlatList } from 'react-native'
 import { connect } from 'react-redux'
-import { receiveDecks, addDeck, removeDeck } from '../actions'
 import { timeToString, getDailyReminderValue } from '../utils/helpers'
 import { getDecks } from '../utils/api'
 import { white, lightBlue, darkgray } from '../utils/colors'
+import { receiveDecks, addDeck, removeDeck } from '../actions'
 import { AppLoading } from 'expo'
 import DeckDetails from './DeckDetails'
 
@@ -18,17 +18,10 @@ class Decks extends Component {
 
     getDecks()
       .then((decks) => {
-        dispatch(receiveDecks(decks))
-        console.log("decks db:", decks)
-      }
-    )
-    //   .then(({ entries }) => {
-    //     if (!entries[timeToString()]) {
-    //       dispatch(addEntry({
-    //         [timeToString()]: getDailyReminderValue()
-    //       }))
-    //     }
-    //   })
+          dispatch(receiveDecks(decks))
+          console.log("decks db:", decks)
+        }
+      )
       .then(() => this.setState(() => ({ready: true})))
   }
 
@@ -40,18 +33,6 @@ class Decks extends Component {
             <TouchableOpacity style={styles.item} onPress={()=> this.props.navigation.navigate('Deck',
             { deckTitle: value.title })}>
             <DeckDetails style={styles.deckDetails} deck={value}/>
-            {/* <View>
-                <View>
-                    <Text style={styles.title}>
-                        {value.title}
-                    </Text>
-                </View>
-                <View>
-                    <Text style={styles.cardCount}>
-                        {value.questions.length} Cards
-                    </Text>
-                </View>
-            </View> */}
             </TouchableOpacity>
         </View>
       )
@@ -65,10 +46,9 @@ class Decks extends Component {
     }
     
     return (
-        <FlatList 
-        // style={styles.container}
-        data={Object.entries(decks)}
-        renderItem={this.renderItem} />
+      <FlatList 
+      data={Object.entries(decks)}
+      renderItem={this.renderItem} />
     )
   }
 }

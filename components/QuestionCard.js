@@ -1,23 +1,8 @@
 import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import { darkgray, white } from '../utils/colors'
+import { darkgray, white, green, red } from '../utils/colors'
 import SubmitBtn from './SubmitBtn'
 import TextButton from './TextButton'
-
-const styles = StyleSheet.create({
-    title: {
-        fontSize: 35,
-        alignSelf: 'center',
-        fontWeight: 'bold',
-    },
-    cardCount: {
-        fontSize: 20,
-        paddingTop: 20,
-        paddingBottom: 20,
-        color: darkgray,
-        alignSelf: 'center'
-    }
-})
 
 const ToggleQuestionAnswer = (props) => {
     let content, buttonText;
@@ -32,7 +17,7 @@ const ToggleQuestionAnswer = (props) => {
     }
     return(
         <View>
-            <View>
+            <View style={styles.questionAnswer}>
                 <Text style={styles.title}>
                     {content}
                 </Text>
@@ -77,5 +62,50 @@ class QuestionCard extends Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    title: {
+        fontSize: 35,
+        alignSelf: 'center',
+        fontWeight: 'bold',
+    },
+    cardCount: {
+        fontSize: 20,
+        paddingTop: 20,
+        paddingBottom: 20,
+        color: darkgray,
+        alignSelf: 'center'
+    },
+    questionAnswer: {
+        flex: 1,
+        backgroundColor: white,
+        padding: 20,
+        justifyContent: 'center'
+    },
+    correctButton: {
+        padding: 10,
+        paddingLeft: 30,
+        paddingRight: 30,
+        justifyContent: 'center',
+        borderWidth: 1, 
+        borderRadius: 2,
+        height: 45,
+        backgroundColor: green,
+        alignItems: 'center',
+        marginBottom: 30
+    },
+    incorrectButton: {
+        padding: 10,
+        paddingLeft: 30,
+        paddingRight: 30,
+        justifyContent: 'center',
+        borderWidth: 1, 
+        borderRadius: 2,
+        height: 45,
+        backgroundColor: red,
+        alignItems: 'center',
+        marginBottom: 30
+    },
+})
 
 export default QuestionCard;

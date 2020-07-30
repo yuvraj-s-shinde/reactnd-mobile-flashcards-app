@@ -14,6 +14,7 @@ import { FontAwesome, Ionicons} from '@expo/vector-icons'
 import { NavigationContainer } from '@react-navigation/native'
 import Constants from 'expo-constants'
 import { purple, white } from './utils/colors';
+import ScoreCard from './components/ScoreCard'
  
 const FlashcardStatusBar = ({backgroundColor, ...props}) => (
   <View style={{backgroundColor, height: Constants.statusBarHeight}}>

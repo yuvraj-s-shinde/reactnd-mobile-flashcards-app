@@ -2,6 +2,23 @@ import React from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { darkgray, white } from '../utils/colors'
 
+const DeckDetails = ({ style, deck }) => {
+    return(
+        <View style={style}>
+            <View>
+                <Text style={styles.title}>
+                    {deck.title}
+                </Text>
+            </View>
+            <View>
+                <Text style={styles.cardCount}>
+                    {deck.questions.length} Cards
+                </Text>
+            </View>
+        </View>
+    )
+}
+
 const styles = StyleSheet.create({
     title: {
         fontSize: 35,
@@ -16,22 +33,5 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     }
 })
-
-const DeckDetails = ({ style, deck }) => {
-        return(
-            <View style={style}>
-                <View>
-                    <Text style={styles.title}>
-                        {deck.title}
-                    </Text>
-                </View>
-                <View>
-                    <Text style={styles.cardCount}>
-                        {deck.questions.length} Cards
-                    </Text>
-                </View>
-            </View>
-        )
-}
 
 export default DeckDetails;
