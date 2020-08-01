@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Platform, TextInput } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
-import { NavigationActions } from 'react-navigation'
-import { Ionicons } from '@expo/vector-icons'
-import { saveCardToDeck } from '../utils/api'
 import { white } from '../utils/colors'
-import { addCardToDeck } from '../actions'
 import SubmitBtn from './SubmitBtn'
 import QuestionCard from './QuestionCard'
 import ScoreCard from './ScoreCard'
@@ -14,10 +10,6 @@ class Quiz extends Component {
     state = {
         score: 0,
         currentQuestionNo: 1
-    }
-
-    toHome = () => {
-        this.props.navigation.goBack()
     }
 
     onCorrectAnswer() {
@@ -48,8 +40,8 @@ class Quiz extends Component {
           <View style={styles.container}>
             {currentQuestionNo <= deck.questions.length && (
             <View style={styles.container}>
-                <View>
-                    <Text>
+                <View style={{alignSelf: 'flex-end'}}>
+                    <Text style={{fontSize:20}}>
                         {`${currentQuestionNo}/${deck.questions.length}`}
                     </Text>
                 </View>
@@ -60,14 +52,23 @@ class Quiz extends Component {
                 onIncorrectAnswer={() => this.onIncorrectAnswer()} />            
             </View>
             )}
-            {currentQuestionNo > deck.questions.length && (
+            {currentQuestionNo > deck.questions.length && deck.questions.length != 0 && (
                 <ScoreCard 
                 deckTitle={deck.title}
                 score={score} 
                 maxScore={deck.questions.length} 
                 resetScore={() => this.resetScore()}
                 navigation={this.props.navigation} />
-                
+            )}
+            {deck.questions.length == 0 && (
+                <View style={styles.noQuestions}>
+                    <View>
+                        <Text style={{fontSize:30, fontWeight: 'bold'}}>
+                            Sorry, you cannot take a quiz because 
+                            there are no cards in the deck.
+                        </Text>
+                    </View>
+                </View>
             )}
         </View>
       )
@@ -80,17 +81,18 @@ const styles = StyleSheet.create({
         backgroundColor: white,
         padding: 15,
     },
-    noDataText: {
-        fontSize: 20,
-        paddingTop: 20,
-        paddingBottom: 20
-        },
     questionCard: {
         flex: 1,
         backgroundColor: white,
         padding: 5,
         justifyContent: 'center'
     },
+    noQuestions: {
+        flex: 1,
+        backgroundColor: white,
+        padding: 15,
+        justifyContent: 'center'
+    }
 })
 
 function mapStateToProps(state, { route }) {

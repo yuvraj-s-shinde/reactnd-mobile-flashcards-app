@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
-import { removeDeck, receiveDecks } from '../actions'
-import { deleteDeck, getDecks } from '../utils/api'
+import { removeDeck } from '../actions'
+import { deleteDeck } from '../utils/api'
 import { white, purple } from '../utils/colors'
 import SubmitBtn from './SubmitBtn'
 import TextButton from './TextButton'
@@ -10,11 +10,13 @@ import DeckDetails from './DeckDetails'
 
 class Deck extends Component {
     shouldComponentUpdate(nextProps) {
+        //Check to ensure component does not render for removed deck 
         return nextProps.deck !== null
     }
 
     toHome = () => {
-        this.props.navigation.goBack()
+        //on remove of deck navigating to Decks
+        this.props.navigation.navigate('Decks', { screen: 'Decks' })
     }
 
     handleRemoveDeck = () => {
@@ -26,7 +28,7 @@ class Deck extends Component {
         //update redux
         deleteDeck(deck.title)
 
-        // navigate to home
+        // navigate to decks view
         this.toHome()
     }
 
@@ -51,11 +53,12 @@ const styles = StyleSheet.create({
         backgroundColor: white,
         padding: 15,
     },
-    noDataText: {
-        fontSize: 20,
-        paddingTop: 20,
-        paddingBottom: 20
-        },
+    deckDetails: {
+        flex: 1,
+        backgroundColor: white,
+        padding: 5,
+        justifyContent: 'center'
+    },
     addCardButton: {
         padding: 10,
         paddingLeft: 30,
@@ -79,13 +82,7 @@ const styles = StyleSheet.create({
         backgroundColor: purple,
         alignItems: 'center',
         marginBottom: 30
-    },
-    deckDetails: {
-        flex: 1,
-        backgroundColor: white,
-        padding: 5,
-        justifyContent: 'center'
-    },
+    }
 })
 
 function mapStateToProps(state, { route }) {

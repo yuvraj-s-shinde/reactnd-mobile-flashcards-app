@@ -1,21 +1,38 @@
 import React from 'react';
-import { View, StatusBar, Platform } from 'react-native';
-import Decks from './components/Decks'
-import Deck from './components/Deck'
-import AddDeck from './components/AddDeck'
-import NewQuestion from './components/NewQuestion'
-import Quiz from './components/Quiz'
+import { View, StatusBar } from 'react-native';
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import reducer from './reducers'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import { FontAwesome, Ionicons} from '@expo/vector-icons'
 import { NavigationContainer } from '@react-navigation/native'
 import Constants from 'expo-constants'
-import { purple, white } from './utils/colors';
+import reducer from './reducers'
+import { purple, white } from './utils/colors'
+import { setLocalNotification } from './utils/helpers'
 import ScoreCard from './components/ScoreCard'
- 
+import Decks from './components/Decks'
+import Deck from './components/Deck'
+import AddDeck from './components/AddDeck'
+import NewQuestion from './components/NewQuestion'
+import Quiz from './components/Quiz'
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+
+function getHeaderTitle(route) {
+  // To display title for Add Deck tab as it is under child navigator the title needs to be 
+  // fetched and displayed.
+  // reference: https://reactnavigation.org/docs/screen-options-resolution/#setting-parent-screen-options-based-on-child-navigators-state
+
+  const routeName = getFocusedRouteNameFromRoute(route) ?? 'Decks';
+
+  switch (routeName) {
+    case 'Decks':
+      return 'Decks';
+    case 'Add Deck':
+      return 'Add Deck';
+  }
+}
+
 const FlashcardStatusBar = ({backgroundColor, ...props}) => (
   <View style={{backgroundColor, height: Constants.statusBarHeight}}>
     <StatusBar translucent backgroundColor={backgroundColor} {...props}/>
@@ -25,9 +42,12 @@ const FlashcardStatusBar = ({backgroundColor, ...props}) => (
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
 
-const NavTab = () => (
+const NavTab = ({ navigation, route }) => {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({ headerTitle: getHeaderTitle(route) });
+  }, [navigation, route]);
+  return (
   <Tab.Navigator tabBarOptions={{
-    activeTintColor: white,
     style: {
       backgroundColor: purple,
       shadowColor: 'rgba(0, 0, 0, 0.24)',
@@ -53,10 +73,17 @@ const NavTab = () => (
         }}/>
   </Tab.Navigator>
 )
+}
  
 const NavStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name='Decks' component={NavTab}/>
+    <Stack.Screen name='Decks' component={NavTab} options={({ route }) => ({
+      headerTitle: getHeaderTitle(route),
+      headerTintColor: white,
+      headerStyle: {
+        backgroundColor: purple,
+      }
+      })}/>
     <Stack.Screen name='Deck' component={Deck} options={{
       headerTintColor: white,
       headerStyle: {
@@ -80,7 +107,7 @@ const NavStack = () => (
 
 export default class App extends React.Component {
   componentDidMount () {
-      debugger
+      setLocalNotification()
   }
   render() {
     return (

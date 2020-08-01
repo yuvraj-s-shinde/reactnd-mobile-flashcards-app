@@ -1,6 +1,5 @@
 import React from 'react'
-import { Text, TouchableOpacity, StyleSheet, Platform } from 'react-native'
-import { purple, white } from '../utils/colors'
+import { Text, TouchableOpacity, StyleSheet } from 'react-native'
 
 const SubmitBtn = ({ style, onPress, text }) => {
     return(

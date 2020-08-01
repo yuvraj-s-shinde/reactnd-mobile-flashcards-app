@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Platform, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TextInput } from 'react-native'
 import { connect } from 'react-redux'
-import { NavigationActions } from 'react-navigation'
 import { Ionicons } from '@expo/vector-icons'
-import { saveDeckTitle, getDeck } from '../utils/api'
+import { saveDeckTitle } from '../utils/api'
 import { white, purple } from '../utils/colors'
 import { addDeck } from '../actions'
 import SubmitBtn from './SubmitBtn'
@@ -13,8 +12,9 @@ class AddDeck extends Component {
         deckTitle: ''
     }
 
-    toHome = () => {
-        this.props.navigation.goBack()
+    toDeck = (deckTitle) => {
+        // navigate to Deck view after creation of deck
+        this.props.navigation.navigate('Deck', { deckTitle: deckTitle })
     }
 
     onChangeText(text) {
@@ -25,24 +25,29 @@ class AddDeck extends Component {
 
     submit = () => {
         const { deckTitle } = this.state
-        const deck = {
-          title: deckTitle,
-          questions: []
+        if (deckTitle === '') {
+            alert('Please enter deck title')
         }
+        else {
+            const deck = {
+            title: deckTitle,
+            questions: []
+            }
 
-        //update redux
-        this.props.dispatch(addDeck(deck))
+            //update redux
+            this.props.dispatch(addDeck(deck))
 
-        //update db
-        saveDeckTitle(deckTitle)
+            //update db
+            saveDeckTitle(deckTitle)
 
-        //reset state
-        this.setState({
-            deckTitle: ''
-        })
+            //reset state
+            this.setState({
+                deckTitle: ''
+            })
 
-        // navigate to home
-        this.toHome()
+            // navigate to home
+            this.toDeck(deckTitle)
+        }
     }
 
     render() {

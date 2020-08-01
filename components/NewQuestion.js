@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Platform, TextInput } from 'react-native'
+import { View, StyleSheet, TextInput } from 'react-native'
 import { connect } from 'react-redux'
-import { NavigationActions } from 'react-navigation'
 import { Ionicons } from '@expo/vector-icons'
 import { saveCardToDeck } from '../utils/api'
 import { addCardToDeck } from '../actions'
@@ -14,7 +13,8 @@ class NewQuestion extends Component {
         answer: ''
     }
 
-    toHome = () => {
+    toDeck = () => {
+        // Go back to Deck view after adding question
         this.props.navigation.goBack()
     }
 
@@ -32,26 +32,34 @@ class NewQuestion extends Component {
 
     submit = () => {
         const { question, answer } = this.state
-        const { deckTitle } = this.props
-        const card = {
-            question: question,
-            answer: answer
+        if (question === '') {
+            alert('Please enter question')
         }
+        else if (answer === '') {
+            alert('Please enter answer')
+        }
+        else {
+            const { deckTitle } = this.props
+            const card = {
+                question: question,
+                answer: answer
+            }
 
-        //update redux
-        this.props.dispatch(addCardToDeck(deckTitle, card))
+            //update redux
+            this.props.dispatch(addCardToDeck(deckTitle, card))
 
-        //update db
-        saveCardToDeck(deckTitle, card)
+            //update db
+            saveCardToDeck(deckTitle, card)
 
-        //reset state
-        this.setState({
-            question: '',
-            answer: ''
-        })
+            //reset state
+            this.setState({
+                question: '',
+                answer: ''
+            })
 
-        // navigate to home
-        this.toHome()
+            // navigate to deck
+            this.toDeck()
+        }
     }
 
     render() {
@@ -89,24 +97,6 @@ const styles = StyleSheet.create({
         backgroundColor: white,
         justifyContent: 'space-around'
     },
-    row: {
-        flexDirection: 'row',
-        flex: 1,
-        alignItems: 'center'
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 30,
-        marginLeft: 30,
-    },
-    title: {
-        fontSize: 20,
-        alignSelf: 'center',
-        fontWeight: "bold",
-        justifyContent: 'center'
-        },
     textInput: {  
       borderColor: 'gray', 
       marginLeft: 20,
@@ -128,7 +118,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         marginLeft: 15,
         marginRight: 15
-    },
+    }
 })
 
 function mapStateToProps(state, { route }) {

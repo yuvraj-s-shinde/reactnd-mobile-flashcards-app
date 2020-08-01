@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import { darkgray, white } from '../utils/colors'
+import { View, Text, StyleSheet } from 'react-native'
+import { darkgray } from '../utils/colors'
 
 const DeckDetails = ({ style, deck }) => {
     return(

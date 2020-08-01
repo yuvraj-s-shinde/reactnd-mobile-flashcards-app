@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Platform, TouchableOpacity, FlatList } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Animated } from 'react-native'
 import { connect } from 'react-redux'
-import { timeToString, getDailyReminderValue } from '../utils/helpers'
 import { getDecks } from '../utils/api'
-import { white, lightBlue, darkgray } from '../utils/colors'
-import { receiveDecks, addDeck, removeDeck } from '../actions'
+import { white, lightBlue } from '../utils/colors'
+import { receiveDecks } from '../actions'
 import { AppLoading } from 'expo'
 import DeckDetails from './DeckDetails'
 
 class Decks extends Component {
   state = {
-      ready: false,
+    ready: false,
+    bounceValue: new Animated.Value(1),
   }
   
   componentDidMount () {
@@ -19,23 +19,32 @@ class Decks extends Component {
     getDecks()
       .then((decks) => {
           dispatch(receiveDecks(decks))
-          console.log("decks db:", decks)
         }
       )
       .then(() => this.setState(() => ({ready: true})))
   }
 
-  renderItem = ({ item }) => {
-      const [key, value] = item
+  handleOnPress(value) {
+    const { bounceValue } = this.state
+    Animated.sequence([
+          Animated.timing(bounceValue, { duration: 200, toValue: 1.04, useNativeDriver: true}),
+          Animated.spring(bounceValue, { toValue: 1, friction: 4, useNativeDriver: true})
+        ]).start()
+    this.props.navigation.navigate('Deck',
+            { deckTitle: value.title })
+  }
 
-      return (
-          <View key={key} style={styles.container}>
-            <TouchableOpacity style={styles.item} onPress={()=> this.props.navigation.navigate('Deck',
-            { deckTitle: value.title })}>
-            <DeckDetails style={styles.deckDetails} deck={value}/>
-            </TouchableOpacity>
-        </View>
-      )
+  renderItem = ({ item }) => {
+    const [key, value] = item
+    const { bounceValue } =  this.state
+
+    return (
+      <Animated.View key={key} style={[styles.container, {transform: [{scale: bounceValue}]}]}>
+        <TouchableOpacity style={styles.item} onPress={()=> this.handleOnPress(value)}>
+        <DeckDetails style={styles.deckDetails} deck={value}/>
+        </TouchableOpacity>
+      </Animated.View>
+    )
   } 
 
   render() {
@@ -48,49 +57,41 @@ class Decks extends Component {
     return (
       <FlatList 
       data={Object.entries(decks)}
-      renderItem={this.renderItem} />
+      renderItem={this.renderItem}
+      keyExtractor={(item) => {
+        const [key, value] = item
+        return key
+      }} />
     )
   }
 }
 
 const styles = StyleSheet.create({
-    item: {
-        padding: 20,
-        borderRadius: Platform.OS === 'ios' ? 16 : 10,
-        marginLeft: 10,
-        marginRight: 10,
-        justifyContent: 'center',
-        shadowRadius: 20,
-        shadowOpacity: 0.8,
-        shadowColor: 'rgba(0,0,0,24)',
-        shadowOffset: {
-            width: 0,
-            height: 3,
-        },
-        backgroundColor: lightBlue
-    },
-    container: {
-        flex: 1,
-        backgroundColor: white,
-        padding: 10,
-    },
-    title: {
-        fontSize: 20,
-        alignSelf: 'center',
-        fontWeight: 'bold',
-    },
-    cardCount: {
-        fontSize: 20,
-        paddingTop: 20,
-        paddingBottom: 20,
-        color: darkgray,
-        alignSelf: 'center'
-    },
-    deckDetails: {
-        flex: 1,
-        padding: 5,
-        justifyContent: 'center'
-    },
+  container: {
+      flex: 1,
+      backgroundColor: white,
+      padding: 10,
+  },
+  item: {
+      padding: 20,
+      borderRadius: Platform.OS === 'ios' ? 16 : 10,
+      marginLeft: 10,
+      marginRight: 10,
+      justifyContent: 'center',
+      shadowRadius: 20,
+      shadowOpacity: 0.8,
+      shadowColor: 'rgba(0,0,0,24)',
+      shadowOffset: {
+          width: 0,
+          height: 3,
+      },
+      backgroundColor: lightBlue
+  },
+  deckDetails: {
+      flex: 1,
+      padding: 5,
+      justifyContent: 'center'
+  }
 })
 
 function mapStateToProps (decks) {

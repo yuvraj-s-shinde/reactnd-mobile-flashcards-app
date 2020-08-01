@@ -4,7 +4,7 @@ import { deckResults } from './helpers'
 const DECKS_STORAGE_KEY = 'MobileFlashcards:decks'
 
 export function getDecks() {
-    return AsyncStorage.getItem(DECKS_STORAGE_KEY).then((deckResults) => JSON.parse(deckResults))
+    return AsyncStorage.getItem(DECKS_STORAGE_KEY).then((results) => JSON.parse(results))
 }
 
 export function getDeck(id) {
@@ -28,9 +28,9 @@ export function saveCardToDeck(deckTitle, card) {
         [deckTitle]: {
                 ...deck,
                 questions: [
-                            ...deck.questions,
-                            card
-                            ]
+                    ...deck.questions,
+                    card
+                    ]
                 }
         }))
     })

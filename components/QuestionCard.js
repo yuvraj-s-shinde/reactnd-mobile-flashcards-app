@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import { darkgray, white, green, red } from '../utils/colors'
+import { View, Text, StyleSheet } from 'react-native'
+import { white, green, red } from '../utils/colors'
 import SubmitBtn from './SubmitBtn'
 import TextButton from './TextButton'
 
@@ -16,8 +16,8 @@ const ToggleQuestionAnswer = (props) => {
         buttonText = 'Show Question'
     }
     return(
-        <View>
-            <View style={styles.questionAnswer}>
+        <View style={styles.questionAnswer}>
+            <View>
                 <Text style={styles.title}>
                     {content}
                 </Text>
@@ -64,23 +64,18 @@ class QuestionCard extends Component {
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 35,
-        alignSelf: 'center',
-        fontWeight: 'bold',
-    },
-    cardCount: {
-        fontSize: 20,
-        paddingTop: 20,
-        paddingBottom: 20,
-        color: darkgray,
-        alignSelf: 'center'
-    },
     questionAnswer: {
         flex: 1,
         backgroundColor: white,
-        padding: 20,
-        justifyContent: 'center'
+        padding: 15,
+        justifyContent: 'space-between'
+    },
+    title: {
+        fontSize: 40,
+        alignSelf: 'center',
+        fontWeight: "bold",
+        justifyContent: 'center',
+        marginLeft: 15,
     },
     correctButton: {
         padding: 10,
@@ -105,7 +100,7 @@ const styles = StyleSheet.create({
         backgroundColor: red,
         alignItems: 'center',
         marginBottom: 30
-    },
+    }
 })
 
 export default QuestionCard;
