@@ -9,6 +9,7 @@ To get started developing right away:
 
 * install all project dependencies with `yarn install`
 * start the development server with `expo start`
+* tested on android emulator (Pixel_3a_API_30_x86)
 
 ## What You're Getting
 ```bash
